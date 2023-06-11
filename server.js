@@ -1,6 +1,19 @@
 const inquirer = require('inquirer');
+const mysql = require('mysql2');
 
-const menuOptions = ["View All Employees", "Add Employee", "Update Employee Role", "View All Roles", "Add Role", "View All Departments", "Add Department"];
+const db = mysql.createConnection(
+    {
+        host:'localhost',
+        //MySQL username,
+        user: 'root',
+        //MySQL password
+        password: 'Jamily!mySQL31',
+        database: 'company_db'
+    },
+    console.log('Connected to the company_db database')
+);
+
+const menuOptions = ["View All Employees", "Add Employee", "Update Employee Role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"];
 
 
 
@@ -13,7 +26,13 @@ const mainMenu = [
      }
     ];
 
-const AddEmployee = [
+function viewAllEmployees() {
+    db.query('SELECT * FROM employees', function(err, results) {
+        console.log(results);
+    })
+};
+
+const AddEmployeeData = [
     //enter first name
     {
         type: 'input',
@@ -40,13 +59,21 @@ const AddEmployee = [
     },
   ];
 
-const AddRole = [
+function addEmployee() {
+
+};
+
+const AddRoleData = [
     //enter role name
     //enter salary
     //enter department
   ];
 
-const AddDepartment = [
+function addRole() {
+
+};
+
+const AddDepartmenData = [
     //enter department name
   ];
 
@@ -58,14 +85,18 @@ function init() {
         .then((data) => {
         switch(data.mainMenu[0]) {
             //handle the view all employees case
+            
             case menuOptions[0]:
                 //print all the employees
+                viewAllEmployees();
                 //go back to the main menu
+                init();
                 break;
         //handle the view all roles case
         case menuOptions[3]:
             //print all the employees
             //go back to the main menu
+            // if they want to coninue then call init();
             break;
         //handle the view all departments case
         case menuOptions[5]:
@@ -73,8 +104,12 @@ function init() {
             //go back to the main menu
             break;
         //handle the add employee case
+            //case
+                //.prompt(AddEmployeeData)
         //handle the add role case
         //handle the add department case
+
+        //handle the QUIT case by ending the node app maybe with process.exit(0)
         }
         }
         )
@@ -82,3 +117,5 @@ function init() {
 
 // Function call to initialize app
 init();
+
+
