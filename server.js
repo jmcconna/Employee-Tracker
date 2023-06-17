@@ -32,6 +32,18 @@ function viewAllEmployees() {
     })
 };
 
+function viewAllRoles() {
+    db.query('SELECT * FROM roles', function(err, results) {
+        console.log(results);
+    })
+};
+
+function viewAllDepartments() {
+    db.query('SELECT * FROM departments', function(err, results) {
+        console.log(results);
+    })
+};
+
 const AddEmployeeData = [
     //enter first name
     {
@@ -88,19 +100,30 @@ function init() {
             
             case menuOptions[0]:
                 //print all the employees
+                console.log("You selected: View All Employees")
                 viewAllEmployees();
                 //go back to the main menu
                 init();
                 break;
         //handle the view all roles case
         case menuOptions[3]:
-            //print all the employees
+            //print all the roles
+            console.log("You selected: View All Roles")
+                viewAllRoles();
+                //go back to the main menu
+                init();
+                break;
             //go back to the main menu
             // if they want to coninue then call init();
             break;
         //handle the view all departments case
         case menuOptions[5]:
-            //print all the employees
+            //print all the departments
+            console.log("You selected: View All Departments")
+                viewAllDepartments();
+                //go back to the main menu
+                init();
+                break;
             //go back to the main menu
             break;
         //handle the add employee case
