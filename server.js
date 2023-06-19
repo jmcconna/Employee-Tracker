@@ -31,7 +31,7 @@ function viewAllEmployees() {
 
     db.query('SELECT employees.id, employees.firstName, employees.lastName, roles.title, departments.departmentName AS department, roles.salary FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id', function (err, results) {
         console.table(results);
-        if(err) {console.log(err)}
+        if (err) { console.log(err) }
         init();
     })
     //FROM employees A, employees B
@@ -42,8 +42,8 @@ function viewAllEmployees() {
 async function getAllEmployees() { //helper function to fetch all current employees
     let employeeList;
     const results = await db.promise().query('SELECT firstName, lastName, id FROM employees');
-    employeeList = results[0].map((employee)=> {
-        return {name: employee.firstName + " " +employee.lastName, value: employee.id}
+    employeeList = results[0].map((employee) => {
+        return { name: employee.firstName + " " + employee.lastName, value: employee.id }
     })
     return employeeList;
 };
@@ -51,7 +51,7 @@ async function getAllEmployees() { //helper function to fetch all current employ
 function viewAllRoles() {
     db.query('SELECT roles.id, roles.title, departments.departmentName as department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id', function (err, results) {
         console.table(results);
-        if(err) {console.log(err)}
+        if (err) { console.log(err) }
         init();
     })
 };
@@ -59,8 +59,8 @@ function viewAllRoles() {
 async function getAllRoles() { //helper function to fetch all current roles
     let roleList;
     const results = await db.promise().query('SELECT title, id FROM roles');
-    roleList = results[0].map((role)=> {
-        return {name: role.title, value: role.id}
+    roleList = results[0].map((role) => {
+        return { name: role.title, value: role.id }
     })
     return roleList;
 };
@@ -68,7 +68,7 @@ async function getAllRoles() { //helper function to fetch all current roles
 function viewAllDepartments() {
     db.query('SELECT id, departmentName AS department FROM departments', function (err, results) {
         console.table(results);
-        if(err) {console.log(err)}
+        if (err) { console.log(err) }
         init();
     })
 };
@@ -76,8 +76,8 @@ function viewAllDepartments() {
 async function getAllDepts() { //helper function to fetch all current depts
     let deptList;
     const results = await db.promise().query('SELECT departmentName, id FROM departments');
-    deptList = results[0].map((dept)=> {
-        return {name: dept.departmentName, value: dept.id}
+    deptList = results[0].map((dept) => {
+        return { name: dept.departmentName, value: dept.id }
     })
     return deptList;
 };
@@ -114,13 +114,13 @@ const AddEmployeeData = [
 function addEmployee() {
     inquirer
         .prompt(AddEmployeeData)
-        .then((data) => { 
+        .then((data) => {
             const fname = data.firstName;
             const lname = data.lastName;
-            const role = data.role; 
-            const manager = data.manager; 
-            db.query('INSERT INTO employees (firstName, lastName, role_id, manager_id) VALUES (?, ?, ?, ?)',[fname, lname, role, manager] ,init)
-            
+            const role = data.role;
+            const manager = data.manager;
+            db.query('INSERT INTO employees (firstName, lastName, role_id, manager_id) VALUES (?, ?, ?, ?)', [fname, lname, role, manager], init)
+            console.log("Added " + fname + " " + lname + " to the database");
         })
 };
 
@@ -158,15 +158,38 @@ function updateEmployee() {
 };
 
 const AddRoleData = [
-    //enter role name
-    //enter salary
-    //enter department
+ 
+        //enter role name
+        {
+            type: 'input',
+            message: `What is the name of the role?`,
+            name: 'title',
+        },
+        //enter salary
+        {
+            type: 'input',
+            message: `What is the salary of the role?`,
+            name: 'salary',
+        },
+        //which dept?
+        {
+            type: 'list',
+            message: `To which department does the role belong?`,
+            name: 'dept',
+            choices: getAllDepts
+        },
 ];
 
 function addRole() {
     inquirer
         .prompt(AddRoleData)
-        .then((data) => { })
+        .then((data) => { 
+            const title = data.title;
+            const salary = data.salary;
+            const dept = data.dept;
+            db.query('INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)', [title, salary, dept], init)
+            console.log("Added " + title + " to the database");
+        })
 };
 
 const AddDepartmenData = [
@@ -181,8 +204,9 @@ const AddDepartmenData = [
 function addDepartment() {
     inquirer
         .prompt(AddDepartmenData)
-        .then((data) => { 
-            db.query('INSERT INTO departments (departmentName) VALUES (?)',[data.newDept] ,init)
+        .then((data) => {
+            db.query('INSERT INTO departments (departmentName) VALUES (?)', [data.newDept], init)
+            console.log("Added " + data.newDept + " to the database");
         })
 };
 
@@ -197,51 +221,40 @@ function init() {
                 //handle the view all employees case
                 case menuOptions[0]:
                     //print all the employees
-                    console.log("You selected: View All Employees")
                     viewAllEmployees();
                     break;
 
                 //handle the add employee case
                 case menuOptions[1]:
                     //print all the employees
-                    console.log("You selected: Add Employee")
                     addEmployee();
                     break;
-
 
                 //handle the update employee case
                 case menuOptions[2]:
                     //print all the employees
-                    console.log("You selected: Update Employee")
                     updateEmployee();
                     break;
-
 
                 //handle the view all roles case
                 case menuOptions[3]:
                     //print all the roles
-                    console.log("You selected: View All Roles")
                     viewAllRoles();
                     break;
 
                 //handle the add role case
                 case menuOptions[4]:
-                    console.log("You selected: Add Role")
                     addRole();
-                    //go back to the main menu
-                    init();
                     break;
 
                 //handle the view all departments case
                 case menuOptions[5]:
                     //print all the departments
-                    console.log("You selected: View All Departments")
                     viewAllDepartments();
                     break;
-                
+
                 //handle the add department case
                 case menuOptions[6]:
-                    console.log("You selected: Add Department")
                     addDepartment();
                     break;
 
