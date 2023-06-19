@@ -73,7 +73,7 @@ function viewAllDepartments() {
     })
 };
 
-async function getAllDepts() { //helper function to fetch all current roles
+async function getAllDepts() { //helper function to fetch all current depts
     let deptList;
     const results = await db.promise().query('SELECT departmentName, id FROM departments');
     deptList = results[0].map((dept)=> {
@@ -112,15 +112,13 @@ const AddEmployeeData = [
 ];
 
 function addEmployee() {
-        //retrieve list of current employees for possible managers
-
     inquirer
         .prompt(AddEmployeeData)
         .then((data) => { 
             const fname = data.firstName;
             const lname = data.lastName;
-            const role = data.role; //list logic
-            const manager = data.manager; //list logic
+            const role = data.role; 
+            const manager = data.manager; 
             db.query('INSERT INTO employees (firstName, lastName, role_id, manager_id) VALUES (?, ?, ?, ?)',[fname, lname, role, manager] ,init)
             
         })
@@ -175,15 +173,17 @@ const AddDepartmenData = [
     //enter department name
     {
         type: 'input',
-        message: 'Enter department name: ',
-        name: 'departmentName',
+        message: 'What is the name of the department?',
+        name: 'newDept'
     },
 ];
 
 function addDepartment() {
     inquirer
         .prompt(AddDepartmenData)
-        .then((data) => { })
+        .then((data) => { 
+            db.query('INSERT INTO departments (departmentName) VALUES (?)',[data.newDept] ,init)
+        })
 };
 
 
@@ -243,8 +243,6 @@ function init() {
                 case menuOptions[6]:
                     console.log("You selected: Add Department")
                     addDepartment();
-                    //go back to the main menu
-                    init();
                     break;
 
                 //handle the QUIT case by ending the node app with process.exit(0)
