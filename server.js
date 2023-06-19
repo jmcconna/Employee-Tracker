@@ -49,8 +49,8 @@ async function getAllEmployees() { //helper function to fetch all current employ
 };
 
 function viewAllRoles() {
-    db.query('SELECT * FROM roles', function (err, results) {
-        console.log(results);
+    db.query('SELECT roles.id, roles.title, departments.departmentName as department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id', function (err, results) {
+        console.table(results);
         if(err) {console.log(err)}
         init();
     })
@@ -222,11 +222,15 @@ function init() {
                     //print all the roles
                     console.log("You selected: View All Roles")
                     viewAllRoles();
-                    //go back to the main menu
-                    init();
                     break;
 
                 //handle the add role case
+                case menuOptions[4]:
+                    console.log("You selected: Add Role")
+                    addRole();
+                    //go back to the main menu
+                    init();
+                    break;
 
                 //handle the view all departments case
                 case menuOptions[5]:
