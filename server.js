@@ -34,6 +34,7 @@ function viewAllEmployees() {
         if (err) { console.log(err) }
         init();
     })
+    //TODO - add Manager to display
     //FROM employees A, employees B
     //CONCAT(B.firstName, " ", B.lastName) AS Manager WHERE A.manager_id = B.id
     //INNER JOIN A ON A.manager_id = B.id'
@@ -119,42 +120,35 @@ function addEmployee() {
             const lname = data.lastName;
             const role = data.role;
             const manager = data.manager;
-            db.query('INSERT INTO employees (firstName, lastName, role_id, manager_id) VALUES (?, ?, ?, ?)', [fname, lname, role, manager], init)
+            db.query('INSERT INTO employees (firstName, lastName, role_id, manager_id) VALUES (?, ?, ?, ?)', [fname, lname, role, manager], init);
             console.log("Added " + fname + " " + lname + " to the database");
         })
 };
 
 const UpdateEmployeeData = [  //TODO
-    //enter first name
+    //which employee?
     {
-        type: 'input',
-        message: `What is the employee's first name?`,
-        name: 'firstName',
+        type: 'list',
+        message: `Which employee's role do you want to update?`,
+        name: 'employee',
+        choices: getAllEmployees
     },
-    //enter last name
-    {
-        type: 'input',
-        message: `What is the employee's last name?`,
-        name: 'lastName',
-    },
-    //enter role
-    {
-        type: 'input',
-        message: `What is the employee's role?`,
+      //new role?
+      {
+        type: 'list',
+        message: `Which role do you want to assign the selected employee?`,
         name: 'role',
-    },
-    //enter manager
-    {
-        type: 'input',
-        message: `Who is the employee's manager?`,
-        name: 'manager',
+        choices: getAllRoles
     },
 ];
 
 function updateEmployee() {
     inquirer
         .prompt(UpdateEmployeeData)
-        .then((data) => { })
+        .then((data) => { 
+            db.query('UPDATE employees SET role_id = ? WHERE id = ?', [data.role, data.employee], init)
+            console.log("Updated employee's role")
+        })
 };
 
 const AddRoleData = [
@@ -187,7 +181,7 @@ function addRole() {
             const title = data.title;
             const salary = data.salary;
             const dept = data.dept;
-            db.query('INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)', [title, salary, dept], init)
+            db.query('INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)', [title, salary, dept], init);
             console.log("Added " + title + " to the database");
         })
 };
@@ -205,7 +199,7 @@ function addDepartment() {
     inquirer
         .prompt(AddDepartmenData)
         .then((data) => {
-            db.query('INSERT INTO departments (departmentName) VALUES (?)', [data.newDept], init)
+            db.query('INSERT INTO departments (departmentName) VALUES (?)', [data.newDept], init);
             console.log("Added " + data.newDept + " to the database");
         })
 };

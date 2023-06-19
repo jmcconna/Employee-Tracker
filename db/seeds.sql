@@ -4,7 +4,7 @@ VALUES (001, "Operations"),
         (003, "Sales");
 
 INSERT INTO roles (id, title, salary, department_id)
-VALUES (001, "CEO", 250000, NULL),
+VALUES (001, "CEO", 250000, 001),
         (002, "Account Executive", 90000, 003),
         (003, "Technician", 65000, 001),
         (004, "Project Manager", 120000, 001),
