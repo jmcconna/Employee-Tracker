@@ -14,7 +14,7 @@ const db = mysql.createConnection(
     console.log('Connected to the company_db database')
 );
 
-const menuOptions = ["View All Employees", "Add Employee", "Update Employee Role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"];
+const menuOptions = ["View All Employees", "Add Employee", "Update Employee's Role", "Update Employee's Manager", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"];
 
 
 
@@ -125,7 +125,7 @@ function addEmployee() {
         })
 };
 
-const UpdateEmployeeData = [  //TODO
+const UpdateEmployeeRoleData = [  
     //which employee?
     {
         type: 'list',
@@ -142,12 +142,38 @@ const UpdateEmployeeData = [  //TODO
     },
 ];
 
-function updateEmployee() {
+function updateEmployeeRole() {
     inquirer
-        .prompt(UpdateEmployeeData)
+        .prompt(UpdateEmployeeRoleData)
         .then((data) => { 
             db.query('UPDATE employees SET role_id = ? WHERE id = ?', [data.role, data.employee], init)
             console.log("Updated employee's role")
+        })
+};
+
+const UpdateEmployeeManagerData = [  
+    //which employee?
+    {
+        type: 'list',
+        message: `Which employee's manager do you want to update?`,
+        name: 'employee',
+        choices: getAllEmployees
+    },
+      //new role?
+      {
+        type: 'list',
+        message: `Who is the employee's new manager?`,
+        name: 'manager',
+        choices: getAllEmployees //this will include the employee, which doesn't necessarily need to be fixed. Maybe the company allows self-management?
+    },
+];
+
+function updateEmployeeManager() { //TODO - test this
+    inquirer
+        .prompt(UpdateEmployeeManagerData)
+        .then((data) => { 
+            db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [data.manager, data.employee], init);
+            console.log("Updated employee's manager")
         })
 };
 
@@ -224,36 +250,42 @@ function init() {
                     addEmployee();
                     break;
 
-                //handle the update employee case
+                //handle the update employee role case
                 case menuOptions[2]:
                     //print all the employees
-                    updateEmployee();
+                    updateEmployeeRole();
+                    break;
+
+                //handle the update employee manager case
+                case menuOptions[3]:
+                    //print all the employees
+                    updateEmployeeManager();
                     break;
 
                 //handle the view all roles case
-                case menuOptions[3]:
+                case menuOptions[4]:
                     //print all the roles
                     viewAllRoles();
                     break;
 
                 //handle the add role case
-                case menuOptions[4]:
+                case menuOptions[5]:
                     addRole();
                     break;
 
                 //handle the view all departments case
-                case menuOptions[5]:
+                case menuOptions[6]:
                     //print all the departments
                     viewAllDepartments();
                     break;
 
                 //handle the add department case
-                case menuOptions[6]:
+                case menuOptions[7]:
                     addDepartment();
                     break;
 
                 //handle the QUIT case by ending the node app with process.exit(0)
-                case menuOptions[7]:
+                case menuOptions[8]:
                     process.exit(0);
             }
         }
