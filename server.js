@@ -66,8 +66,8 @@ async function getAllRoles() { //helper function to fetch all current roles
 };
 
 function viewAllDepartments() {
-    db.query('SELECT * FROM departments', function (err, results) {
-        console.log(results);
+    db.query('SELECT id, departmentName AS department FROM departments', function (err, results) {
+        console.table(results);
         if(err) {console.log(err)}
         init();
     })
@@ -237,8 +237,6 @@ function init() {
                     //print all the departments
                     console.log("You selected: View All Departments")
                     viewAllDepartments();
-                    //go back to the main menu
-                    init();
                     break;
                 
                 //handle the add department case
