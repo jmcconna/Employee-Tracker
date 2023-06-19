@@ -29,11 +29,17 @@ const mainMenu = [
 
 function viewAllEmployees() {
 
-    db.query('SELECT employees.id, employees.firstName, employees.lastName, roles.title, departments.departmentName AS department, roles.salary FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id', function (err, results) {
+    db.query('SELECT A.id, CONCAT(A.firstName, " ", A.lastName) AS employee, roles.title, departments.departmentName AS department, roles.salary, CONCAT(B.firstName, " ", B.lastName) AS manager FROM employees A LEFT JOIN employees B ON A.manager_id = B.id LEFT JOIN roles ON A.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id', function (err, results) {
         console.table(results);
         if (err) { console.log(err) }
         init();
     })
+
+    // db.query('SELECT employees.id, employees.firstName, employees.lastName, roles.title, departments.departmentName AS department, roles.salary FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id', function (err, results) {
+    //     console.table(results);
+    //     if (err) { console.log(err) }
+    //     init();
+    // })
     //TODO - add Manager to display
     //FROM employees A, employees B
     //CONCAT(B.firstName, " ", B.lastName) AS Manager WHERE A.manager_id = B.id
