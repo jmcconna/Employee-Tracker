@@ -35,15 +35,6 @@ function viewAllEmployees() {
         init();
     })
 
-    // db.query('SELECT employees.id, employees.firstName, employees.lastName, roles.title, departments.departmentName AS department, roles.salary FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id', function (err, results) {
-    //     console.table(results);
-    //     if (err) { console.log(err) }
-    //     init();
-    // })
-    //TODO - add Manager to display
-    //FROM employees A, employees B
-    //CONCAT(B.firstName, " ", B.lastName) AS Manager WHERE A.manager_id = B.id
-    //INNER JOIN A ON A.manager_id = B.id'
 };
 
 async function getAllEmployees() { //helper function to fetch all current employees
@@ -131,7 +122,7 @@ function addEmployee() {
         })
 };
 
-const UpdateEmployeeRoleData = [  
+const UpdateEmployeeRoleData = [
     //which employee?
     {
         type: 'list',
@@ -139,8 +130,8 @@ const UpdateEmployeeRoleData = [
         name: 'employee',
         choices: getAllEmployees
     },
-      //new role?
-      {
+    //new role?
+    {
         type: 'list',
         message: `Which role do you want to assign the selected employee?`,
         name: 'role',
@@ -151,13 +142,13 @@ const UpdateEmployeeRoleData = [
 function updateEmployeeRole() {
     inquirer
         .prompt(UpdateEmployeeRoleData)
-        .then((data) => { 
+        .then((data) => {
             db.query('UPDATE employees SET role_id = ? WHERE id = ?', [data.role, data.employee], init)
             console.log("Updated employee's role")
         })
 };
 
-const UpdateEmployeeManagerData = [  
+const UpdateEmployeeManagerData = [
     //which employee?
     {
         type: 'list',
@@ -165,8 +156,8 @@ const UpdateEmployeeManagerData = [
         name: 'employee',
         choices: getAllEmployees
     },
-      //new role?
-      {
+    //new role?
+    {
         type: 'list',
         message: `Who is the employee's new manager?`,
         name: 'manager',
@@ -174,42 +165,42 @@ const UpdateEmployeeManagerData = [
     },
 ];
 
-function updateEmployeeManager() { //TODO - test this
+function updateEmployeeManager() {
     inquirer
         .prompt(UpdateEmployeeManagerData)
-        .then((data) => { 
+        .then((data) => {
             db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [data.manager, data.employee], init);
             console.log("Updated employee's manager")
         })
 };
 
 const AddRoleData = [
- 
-        //enter role name
-        {
-            type: 'input',
-            message: `What is the name of the role?`,
-            name: 'title',
-        },
-        //enter salary
-        {
-            type: 'input',
-            message: `What is the salary of the role?`,
-            name: 'salary',
-        },
-        //which dept?
-        {
-            type: 'list',
-            message: `To which department does the role belong?`,
-            name: 'dept',
-            choices: getAllDepts
-        },
+
+    //enter role name
+    {
+        type: 'input',
+        message: `What is the name of the role?`,
+        name: 'title',
+    },
+    //enter salary
+    {
+        type: 'input',
+        message: `What is the salary of the role?`,
+        name: 'salary',
+    },
+    //which dept?
+    {
+        type: 'list',
+        message: `To which department does the role belong?`,
+        name: 'dept',
+        choices: getAllDepts
+    },
 ];
 
 function addRole() {
     inquirer
         .prompt(AddRoleData)
-        .then((data) => { 
+        .then((data) => {
             const title = data.title;
             const salary = data.salary;
             const dept = data.dept;
@@ -298,7 +289,29 @@ function init() {
         )
 }
 
+// BONUS
+// Application allows users to update employee managers (2 points).
+
+// Application allows users to view employees by manager (2 points).
+
+// Application allows users to view employees by department (2 points).
+
+// Application allows users to delete departments, roles, and employees (2 points for each).
+
+// Application allows users to view the total utilized budget of a department—in other words, the combined salaries of all employees in that department (8 points).
+
 // Function call to initialize app
+console.log ( 
+    `    
+ _______  __   __  _______  ___      _______  __   __  _______  _______    _______  ______    _______  _______  ___   _  _______  ______     
+|       ||  |_|  ||       ||   |    |       ||  | |  ||       ||       |  |       ||    _ |  |   _   ||       ||   | | ||       ||    _ |    
+|    ___||       ||    _  ||   |    |   _   ||  |_|  ||    ___||    ___|  |_     _||   | ||  |  |_|  ||       ||   |_| ||    ___||   | ||    
+|   |___ |       ||   |_| ||   |    |  | |  ||       ||   |___ |   |___     |   |  |   |_||_ |       ||       ||      _||   |___ |   |_||_   
+|    ___||       ||    ___||   |___ |  |_|  ||_     _||    ___||    ___|    |   |  |    __  ||       ||      _||     |_ |    ___||    __  |  
+|   |___ | ||_|| ||   |    |       ||       |  |   |  |   |___ |   |___     |   |  |   |  | ||   _   ||     |_ |    _  ||   |___ |   |  | |  
+|_______||_|   |_||___|    |_______||_______|  |___|  |_______||_______|    |___|  |___|  |_||__| |__||_______||___| |_||_______||___|  |_|  
+                                  
+    `)
 init();
 
 
